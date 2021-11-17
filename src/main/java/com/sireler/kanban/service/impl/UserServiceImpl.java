@@ -2,8 +2,8 @@ package com.sireler.kanban.service.impl;
 
 import com.sireler.kanban.model.Role;
 import com.sireler.kanban.model.User;
-import com.sireler.kanban.repo.RoleRepository;
-import com.sireler.kanban.repo.UserRepository;
+import com.sireler.kanban.repository.RoleRepository;
+import com.sireler.kanban.repository.UserRepository;
 import com.sireler.kanban.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -65,5 +65,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public User update(User user) {
+        return userRepository.save(user);
     }
 }

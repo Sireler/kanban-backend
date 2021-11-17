@@ -32,3 +32,19 @@ CREATE TABLE IF NOT EXISTS workspace_users (
     workspace_id bigserial NOT NULL,
     user_id bigserial NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS lists (
+    id bigserial primary key,
+    workspace_id bigserial NOT NULL,
+    title varchar(100) NOT NULL,
+    created_at timestamp default NULL,
+    updated_at timestamp default NULL
+);
+
+CREATE TABLE IF NOT EXISTS cards (
+    id bigserial primary key,
+    list_id bigserial NOT NULL,
+    body text NOT NULL,
+    created_at timestamp default NULL,
+    updated_at timestamp default NULL
+);

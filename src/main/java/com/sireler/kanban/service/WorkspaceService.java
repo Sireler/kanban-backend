@@ -12,5 +12,7 @@ public interface WorkspaceService {
 
     Workspace findById(Long id);
 
+    Workspace create(Workspace workspace);
+
     void delete(Long id);
 }

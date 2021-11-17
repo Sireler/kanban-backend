@@ -1,14 +1,42 @@
 package com.sireler.kanban.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sireler.kanban.model.User;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 public class UserDto {
 
+    private Long id;
+
+    @NotEmpty
     private String username;
-    private String first_name;
-    private String last_name;
+
+    @NotEmpty
+    @JsonProperty("first_name")
+    private String firstName;
+
+    @NotEmpty
+    @JsonProperty("last_name")
+    private String lastName;
+
+    @NotEmpty
+    @Email
     private String email;
+
+    @NotEmpty
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private String password;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getUsername() {
         return username;
@@ -18,20 +46,20 @@ public class UserDto {
         this.username = username;
     }
 
-    public String getFirst_name() {
-        return first_name;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFirst_name(String first_name) {
-        this.first_name = first_name;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
-    public String getLast_name() {
-        return last_name;
+    public String getLastName() {
+        return lastName;
     }
 
-    public void setLast_name(String last_name) {
-        this.last_name = last_name;
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
     }
 
     public String getEmail() {
@@ -53,11 +81,22 @@ public class UserDto {
     public User toUser() {
         User user = new User();
         user.setUsername(username);
-        user.setFirstName(first_name);
-        user.setLastName(last_name);
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
         user.setEmail(email);
         user.setPassword(password);
 
         return user;
+    }
+
+    public static UserDto fromUser(User user) {
+        UserDto userDto = new UserDto();
+        userDto.setId(user.getId());
+        userDto.setUsername(user.getUsername());
+        userDto.setEmail(user.getEmail());
+        userDto.setFirstName(user.getFirstName());
+        userDto.setLastName(user.getLastName());
+
+        return userDto;
     }
 }

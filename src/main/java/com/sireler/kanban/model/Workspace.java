@@ -10,13 +10,8 @@ public class Workspace extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "workspace_users",
-            joinColumns = {@JoinColumn(name = "workspace_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")}
-    )
-    private List<Workspace> workspaces;
+    @ManyToMany(mappedBy = "workspaces", fetch = FetchType.LAZY)
+    private List<User> users;
 
     public String getName() {
         return name;
@@ -26,22 +21,11 @@ public class Workspace extends BaseEntity {
         this.name = name;
     }
 
-    public List<Workspace> getWorkspaces() {
-        return workspaces;
+    public List<User> getUsers() {
+        return users;
     }
 
-    public void setWorkspaces(List<Workspace> workspaces) {
-        this.workspaces = workspaces;
-    }
-
-    @Override
-    public String toString() {
-        return "Workspace{" +
-                "id=" + id +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
-                ", name='" + name + '\'' +
-                ", workspaces=" + workspaces +
-                '}';
+    public void setUsers(List<User> users) {
+        this.users = users;
     }
 }

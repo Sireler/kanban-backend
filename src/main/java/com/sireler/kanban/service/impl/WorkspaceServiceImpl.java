@@ -1,7 +1,7 @@
 package com.sireler.kanban.service.impl;
 
 import com.sireler.kanban.model.Workspace;
-import com.sireler.kanban.repo.WorkspaceRepository;
+import com.sireler.kanban.repository.WorkspaceRepository;
 import com.sireler.kanban.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,11 @@ public class WorkspaceServiceImpl implements WorkspaceService {
     public Workspace findById(Long id) {
         return workspaceRepository.findById(id)
                 .orElse(null);
+    }
+
+    @Override
+    public Workspace create(Workspace workspace) {
+        return workspaceRepository.save(workspace);
     }
 
     @Override

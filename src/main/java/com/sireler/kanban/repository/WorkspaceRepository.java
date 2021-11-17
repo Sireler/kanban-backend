@@ -1,4 +1,4 @@
-package com.sireler.kanban.repo;
+package com.sireler.kanban.repository;
 
 import com.sireler.kanban.model.Workspace;
 import org.springframework.data.jpa.repository.JpaRepository;
