@@ -1,43 +1,25 @@
 package com.sireler.kanban.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sireler.kanban.model.List;
-import com.sireler.kanban.model.Workspace;
+import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ListDto {
 
     private Long id;
 
+    @NotEmpty
     private String title;
 
     @JsonProperty("workspace_id")
+    @JsonInclude(JsonInclude.Include.NON_NULL)
     private Long workspaceId;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public Long getWorkspaceId() {
-        return workspaceId;
-    }
-
-    public void setWorkspaceId(Long workspaceId) {
-        this.workspaceId = workspaceId;
-    }
 
     public static List toList(ListDto listDto) {
         List list = new List();

@@ -3,21 +3,18 @@ package com.sireler.kanban.controller;
 import com.sireler.kanban.dto.WorkspaceDto;
 import com.sireler.kanban.model.User;
 import com.sireler.kanban.model.Workspace;
-import com.sireler.kanban.security.jwt.JwtAuthenticationException;
 import com.sireler.kanban.security.jwt.JwtUser;
 import com.sireler.kanban.service.UserService;
 import com.sireler.kanban.service.WorkspaceService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,30 +33,23 @@ public class WorkspaceController {
     }
 
     @GetMapping
-    public ResponseEntity<?> getAll() {
-        try {
-            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-            String username = authentication.getName();
+    public ResponseEntity<List<WorkspaceDto>> getAll() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
 
-            User user = userService.findByUsername(username);
+        User user = userService.findByUsername(username);
 
-            List<Workspace> workspaces = user.getWorkspaces();
-            List<WorkspaceDto> workspaceDtos = workspaces.stream()
-                    .map(WorkspaceDto::fromWorkspace)
-                    .collect(Collectors.toList());
+        List<Workspace> workspaces = user.getWorkspaces();
+        List<WorkspaceDto> result = workspaces.stream()
+                .map(WorkspaceDto::fromWorkspace)
+                .collect(Collectors.toList());
 
-            return ResponseEntity.ok(workspaceDtos);
-        } catch (JwtAuthenticationException e) {
-            System.out.println("QWERTY");
-            throw e;
-        } catch (Exception e) {
-            System.out.println("NQWERTY");
-            throw e;
-        }
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
     public ResponseEntity<WorkspaceDto> getWorkspaceById(@PathVariable(name = "id") Long id) {
+        //TODO: check user permissions
         Workspace workspace = workspaceService.findById(id);
 
         if (workspace == null) {
@@ -72,13 +62,15 @@ public class WorkspaceController {
     }
 
     @PostMapping
-    public ResponseEntity<?> storeWorkspace(@RequestBody WorkspaceDto workspaceDto, @AuthenticationPrincipal JwtUser jwtUser) {
+    public ResponseEntity<WorkspaceDto> storeWorkspace(@Valid @RequestBody WorkspaceDto workspaceDto, @AuthenticationPrincipal JwtUser jwtUser) {
         User user = userService.findByUsername(jwtUser.getUsername());
         Workspace workspace = workspaceDto.toWorkspace();
         workspaceService.create(workspace);
         user.getWorkspaces().add(workspace);
         userService.update(user);
 
-        return ResponseEntity.ok(workspace);
+        WorkspaceDto result = WorkspaceDto.fromWorkspace(workspace);
+
+        return new ResponseEntity<>(result, HttpStatus.CREATED);
     }
 }

@@ -2,28 +2,18 @@ package com.sireler.kanban.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sireler.kanban.model.Workspace;
+import lombok.Data;
 
+import javax.validation.constraints.NotEmpty;
+
+@Data
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WorkspaceDto {
 
     private Long id;
+
+    @NotEmpty
     private String name;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
 
     public Workspace toWorkspace() {
         Workspace workspace = new Workspace();
