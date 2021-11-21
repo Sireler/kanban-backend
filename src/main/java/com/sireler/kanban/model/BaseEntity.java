@@ -1,5 +1,6 @@
 package com.sireler.kanban.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,9 +22,11 @@ public class BaseEntity {
 
     @CreatedDate
     @Column(name = "created_at")
+    @JsonProperty("created_at")
     protected Date createdAt;
 
     @LastModifiedDate
     @Column(name = "updated_at")
+    @JsonProperty("updated_at")
     protected Date updatedAt;
 }
