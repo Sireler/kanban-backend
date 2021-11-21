@@ -1,6 +1,8 @@
 package com.sireler.kanban.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sireler.kanban.model.List;
 import com.sireler.kanban.model.Workspace;
 import lombok.Data;
 
@@ -15,10 +17,14 @@ public class WorkspaceDto {
     @NotEmpty
     private String name;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    private java.util.List<List> lists;
+
     public Workspace toWorkspace() {
         Workspace workspace = new Workspace();
         workspace.setId(id);
         workspace.setName(name);
+        workspace.setLists(lists);
 
         return workspace;
     }
@@ -27,6 +33,7 @@ public class WorkspaceDto {
         WorkspaceDto workspaceDto = new WorkspaceDto();
         workspaceDto.setId(workspace.getId());
         workspaceDto.setName(workspace.getName());
+        workspaceDto.setLists(workspace.getLists());
 
         return workspaceDto;
     }

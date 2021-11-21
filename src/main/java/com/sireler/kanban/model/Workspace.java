@@ -1,12 +1,13 @@
 package com.sireler.kanban.model;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
-@Data
 @Entity
+@Setter
+@Getter
 @Table(name = "workspaces")
 public class Workspace extends BaseEntity {
 
@@ -14,5 +15,8 @@ public class Workspace extends BaseEntity {
     private String name;
 
     @ManyToMany(mappedBy = "workspaces", fetch = FetchType.LAZY)
-    private List<User> users;
+    private java.util.List<User> users;
+
+    @OneToMany(mappedBy = "workspace")
+    private java.util.List<List> lists;
 }
