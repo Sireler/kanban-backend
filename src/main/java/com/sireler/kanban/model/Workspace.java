@@ -14,6 +14,10 @@ public class Workspace extends BaseEntity {
     @Column(nullable = false)
     private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ManyToMany(mappedBy = "workspaces", fetch = FetchType.LAZY)
     private java.util.List<User> users;
 

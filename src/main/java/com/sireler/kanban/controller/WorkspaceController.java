@@ -1,17 +1,14 @@
 package com.sireler.kanban.controller;
 
+import com.sireler.kanban.dto.ResponseDto;
 import com.sireler.kanban.dto.WorkspaceDto;
-import com.sireler.kanban.model.User;
 import com.sireler.kanban.model.Workspace;
 import com.sireler.kanban.security.jwt.JwtUser;
-import com.sireler.kanban.service.UserService;
 import com.sireler.kanban.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -24,53 +21,43 @@ public class WorkspaceController {
 
     private final WorkspaceService workspaceService;
 
-    private final UserService userService;
-
     @Autowired
-    public WorkspaceController(WorkspaceService workspaceService, UserService userService) {
+    public WorkspaceController(WorkspaceService workspaceService) {
         this.workspaceService = workspaceService;
-        this.userService = userService;
     }
 
     @GetMapping
-    public ResponseEntity<List<WorkspaceDto>> getAll() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
+    public ResponseEntity<List<WorkspaceDto>> getAll(@AuthenticationPrincipal JwtUser jwtUser) {
+        List<Workspace> workspaces = workspaceService.getAll(jwtUser);
 
-        User user = userService.findByUsername(username);
-
-        List<Workspace> workspaces = user.getWorkspaces();
-        List<WorkspaceDto> result = workspaces.stream()
+        List<WorkspaceDto> response = workspaces.stream()
                 .map(WorkspaceDto::fromWorkspace)
                 .collect(Collectors.toList());
 
-        return new ResponseEntity<>(result, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<WorkspaceDto> getWorkspaceById(@PathVariable(name = "id") Long id) {
-        //TODO: check user permissions
-        Workspace workspace = workspaceService.findById(id);
+    public ResponseEntity<WorkspaceDto> getWorkspace(@PathVariable(name = "id") Long id,
+                                                     @AuthenticationPrincipal JwtUser jwtUser) {
+        Workspace workspace = workspaceService.findById(id, jwtUser);
+        WorkspaceDto response = WorkspaceDto.fromWorkspace(workspace);
 
-        if (workspace == null) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-
-        WorkspaceDto result = WorkspaceDto.fromWorkspace(workspace);
-
-        return new ResponseEntity<WorkspaceDto>(result, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<WorkspaceDto> storeWorkspace(@Valid @RequestBody WorkspaceDto workspaceDto, @AuthenticationPrincipal JwtUser jwtUser) {
-        User user = userService.findByUsername(jwtUser.getUsername());
-        Workspace workspace = workspaceDto.toWorkspace();
-        workspaceService.create(workspace);
-        user.getWorkspaces().add(workspace);
-        userService.update(user);
+    public ResponseEntity<WorkspaceDto> storeWorkspace(@Valid @RequestBody WorkspaceDto workspaceDto,
+                                                       @AuthenticationPrincipal JwtUser jwtUser) {
+        Workspace workspace = workspaceService.save(workspaceDto.toWorkspace(), jwtUser);
+        WorkspaceDto response = WorkspaceDto.fromWorkspace(workspace);
 
-        WorkspaceDto result = WorkspaceDto.fromWorkspace(workspace);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
+    }
 
-        return new ResponseEntity<>(result, HttpStatus.CREATED);
+    @DeleteMapping("{id}")
+    public ResponseDto deleteWorkspace(@PathVariable(name = "id") Long workspaceId,
+                                       @AuthenticationPrincipal JwtUser jwtUser) {
+        return workspaceService.delete(workspaceId, jwtUser);
     }
 }

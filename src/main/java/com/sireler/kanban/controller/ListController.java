@@ -3,11 +3,13 @@ package com.sireler.kanban.controller;
 import com.sireler.kanban.dto.ListDto;
 import com.sireler.kanban.model.List;
 import com.sireler.kanban.model.Workspace;
+import com.sireler.kanban.security.jwt.JwtUser;
 import com.sireler.kanban.service.ListService;
 import com.sireler.kanban.service.WorkspaceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -40,9 +42,10 @@ public class ListController {
 
     @PostMapping
     public ResponseEntity<ListDto> storeList(@Valid @RequestBody ListDto listDto,
-                                             @PathVariable(name = "id") Long workspaceId) {
+                                             @PathVariable(name = "id") Long workspaceId,
+                                             @AuthenticationPrincipal JwtUser jwtUser) {
         listDto.setWorkspaceId(workspaceId);
-        Workspace workspace = workspaceService.findById(listDto.getWorkspaceId());
+        Workspace workspace = workspaceService.findById(listDto.getWorkspaceId(), jwtUser);
         List workspaceList = ListDto.toList(listDto);
         workspaceList.setWorkspace(workspace);
         listService.create(workspaceList);
