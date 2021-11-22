@@ -24,6 +24,7 @@ CREATE TABLE IF NOT EXISTS user_roles (
 CREATE TABLE IF NOT EXISTS workspaces (
     id bigserial primary key,
     name varchar(60) NOT NULL,
+    user_id bigserial NOT NULL,
     created_at timestamp default NULL,
     updated_at timestamp default NULL
 );
