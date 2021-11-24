@@ -1,5 +1,6 @@
 package com.sireler.kanban.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sireler.kanban.model.List;
@@ -17,7 +18,7 @@ public class WorkspaceDto {
     @NotEmpty
     private String name;
 
-    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnore
     private java.util.List<List> lists;
 
     public Workspace toWorkspace() {
