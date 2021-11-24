@@ -1,8 +1,6 @@
 package com.sireler.kanban.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.sireler.kanban.model.List;
 import lombok.Data;
 
@@ -17,14 +15,10 @@ public class ListDto {
     @NotEmpty
     private String title;
 
-    @JsonProperty("workspace_id")
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    private Long workspaceId;
-
-    public static List toList(ListDto listDto) {
+    public List toList() {
         List list = new List();
-        list.setId(listDto.getId());
-        list.setTitle(listDto.getTitle());
+        list.setId(id);
+        list.setTitle(title);
 
         return list;
     }
