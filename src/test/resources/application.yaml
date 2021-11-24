@@ -1,0 +1,26 @@
+spring:
+  jpa:
+    defer-datasource-initialization: true
+    hibernate:
+      ddl-auto: create-drop
+  sql:
+    init:
+      mode: always
+
+app:
+  datasource:
+    main:
+      driver-class-name: org.postgresql.Driver
+      jdbc-url: jdbc:postgresql://localhost:5432/kanban_test
+      username: 'kanban'
+      password: 'password'
+      pool-size: 30
+
+jwt:
+  token-secret: 'PeShVmYq3t6w9y$B&E)H@McQfTjWnZr4'
+  token-expired: 3600000
+
+server:
+  error:
+    include-binding-errors: always
+    include-message: always
