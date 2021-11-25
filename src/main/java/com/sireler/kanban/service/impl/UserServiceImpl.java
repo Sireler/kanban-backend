@@ -1,11 +1,13 @@
 package com.sireler.kanban.service.impl;
 
+import com.sireler.kanban.exception.KanbanApiException;
 import com.sireler.kanban.model.Role;
 import com.sireler.kanban.model.User;
 import com.sireler.kanban.repository.RoleRepository;
 import com.sireler.kanban.repository.UserRepository;
 import com.sireler.kanban.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,8 +17,10 @@ import java.util.List;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private UserRepository userRepository;
-    private RoleRepository roleRepository;
+    private final UserRepository userRepository;
+
+    private final RoleRepository roleRepository;
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -28,6 +32,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User register(User user) {
+        if (userRepository.existsByUsername(user.getUsername())) {
+            throw new KanbanApiException(HttpStatus.BAD_REQUEST, "Username is already taken");
+        } else if (userRepository.existsByEmail(user.getEmail())) {
+            throw new KanbanApiException(HttpStatus.BAD_REQUEST, "Email is already taken");
+        }
+
         Role role = roleRepository.findByName("ROLE_USER");
         List<Role> userRoles = new ArrayList<>();
         userRoles.add(role);

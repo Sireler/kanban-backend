@@ -58,14 +58,14 @@ public class AuthenticationController {
     @PostMapping("register")
     public ResponseEntity<UserDto> register(@Valid @RequestBody UserDto userDto, HttpServletRequest request) {
         try {
-            //TODO: check username and email available
             User user = userDto.toUser();
             User registeredUser = userService.register(user);
             UserDto userResponse = UserDto.fromUser(registeredUser);
 
             return ResponseEntity.ok(userResponse);
+        } catch (KanbanApiException e) {
+            throw e;
         } catch (Exception e) {
-            //TODO: change message to more informative
             throw new KanbanApiException(HttpStatus.BAD_REQUEST, "Register error");
         }
     }
