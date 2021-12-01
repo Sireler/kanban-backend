@@ -1,16 +1,12 @@
 package com.sireler.kanban.service;
 
+import com.sireler.kanban.dto.ResponseDto;
 import com.sireler.kanban.model.Card;
-
-import java.util.List;
+import com.sireler.kanban.security.jwt.JwtUser;
 
 public interface CardService {
 
-    Card findById(Long id);
+    Card save(Card card, Long listId, JwtUser jwtUser);
 
-    List<Card> findAllByListId(Long id);
-
-    Card create(Card card);
-
-    void delete(Long id);
+    ResponseDto delete(Long workspaceId, Long cardId, JwtUser jwtUser);
 }
